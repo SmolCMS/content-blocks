@@ -1,0 +1,9 @@
+{% block block_row %}
+    {% for field in form %}
+        {{ form_row(field) }}
+    {% endfor %}
+{% endblock %}
+
+{% block block_property_row %}
+    {{ form_widget(form) }}
+{% endblock %}

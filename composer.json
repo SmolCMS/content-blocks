@@ -1,0 +1,39 @@
+{
+  "name": "smolcms/blocks",
+  "version": "1.0.0",
+  "description": "",
+  "authors": [
+    {
+      "name": "Kamil Smolak",
+      "email": "kamil@smol.pl",
+      "homepage": "https://smol.pl",
+      "role": "developer"
+    }
+  ],
+  "license": "proprietary",
+  "require": {
+    "php": "^8.2",
+    "symfony/dependency-injection": "6.2.*",
+    "symfony/form": "6.2.*",
+    "symfony/twig-bundle": "6.2.*",
+    "symfony/serializer": "6.2.*",
+    "symfony/validator": "6.2.*",
+    "twig/twig": "^2.12|^3.0",
+    "symfony/ux-live-component": "^2.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "symfony/debug-bundle": "^6.2",
+    "symfony/phpunit-bridge": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "SmolCms\\Bundle\\ContentBlock\\": "./src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SmolCms\\Bundle\\ContentBlock\\Tests\\": "./tests"
+    }
+  }
+}
