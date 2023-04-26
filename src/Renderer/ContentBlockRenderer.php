@@ -12,24 +12,22 @@ use SmolCms\Bundle\ContentBlock\ContentBlock;
 use SmolCms\Bundle\ContentBlock\ContentBlockFactory;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
-class ContentBlockRenderer
+readonly class ContentBlockRenderer
 {
-    private array $templates = [];
-
     public function __construct(
-        private readonly ContentBlockEngine $engine,
-        private readonly ContentBlockFactory $blockFactory,
-        private readonly DenormalizerInterface $denormalizer,
+        private ContentBlockEngine $engine,
+        private ContentBlockFactory $blockFactory,
+        private DenormalizerInterface $denormalizer,
     ) {
     }
 
-    public function render(array $data, string $theme): ?string
+    public function render(mixed $data, string $theme): ?string
     {
         if (!$data) {
             return null;
         }
 
-        $block = $this->getBlock($data);
+        $block = $this->resolveBlock($data);
 
         return $this->renderBlock($block, $theme);
     }
@@ -43,7 +41,7 @@ class ContentBlockRenderer
         $html = '';
 
         foreach ($blocks as $block) {
-            $block = $this->getBlock($block);
+            $block = $this->resolveBlock($block);
             $html .= $this->renderBlock($block, $theme);
         }
 
@@ -57,7 +55,7 @@ class ContentBlockRenderer
         return $this->engine->render($block->getMetadata(), $object, $theme);
     }
 
-    private function getBlock(ContentBlock|array $block): ContentBlock
+    private function resolveBlock(ContentBlock|array $block): ContentBlock
     {
         if ($block instanceof ContentBlock) {
             return $block;

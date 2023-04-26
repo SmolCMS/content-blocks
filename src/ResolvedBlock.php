@@ -43,17 +43,18 @@ readonly class ResolvedBlock
         return $this->outerProperty?->getType() ?? $this->metadata->type;
     }
 
-    public function getFormOptions(): array
+    public function getLabel(): string|bool
     {
-        if ($this->getOuterProperty()) {
-            return $this->getOuterProperty()->getFormOptions();
-        }
+        return $this->getOuterProperty()?->getLabel() ?? $this->getType()->label ?? $this->metadata->name;
+    }
 
-        $type = $this->getType();
+    public function isRequired(): ?bool
+    {
+        return $this->getOuterProperty()?->isRequired() ?? $this->getType()->required;
+    }
 
-        return $type->formOptions + [
-            'label' => $type->label ?? $this->metadata->name,
-            'required' => $type->required,
-        ];
+    public function getConstraints(): array
+    {
+        return $this->getOuterProperty()?->getConstraints() ?? [];
     }
 }

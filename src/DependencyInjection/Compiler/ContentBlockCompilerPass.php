@@ -3,7 +3,7 @@
 namespace SmolCms\Bundle\ContentBlock\DependencyInjection\Compiler;
 
 use LogicException;
-use SmolCms\Bundle\ContentBlock\Metadata\ContentBlockRegistry;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -11,14 +11,14 @@ class ContentBlockCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->has(ContentBlockRegistry::class)) {
+        if (!$container->has(MetadataRegistry::class)) {
             return;
         }
 
         $config = $this->getConfig($container);
         $providers = $this->getProviders($container);
 
-        $container->findDefinition(ContentBlockRegistry::class)
+        $container->findDefinition(MetadataRegistry::class)
             ->setArgument('$config', $config)
             ->setArgument('$providers', $providers)
         ;
@@ -45,7 +45,7 @@ class ContentBlockCompilerPass implements CompilerPassInterface
                     );
                 }
 
-                $tag['class'] = $definition->getClass();
+                $tag['class'] = $tag['class'] ?? $definition->getClass();
                 $tag['service_id'] = $id;
                 $config[$tag['key']] = $tag;
             }

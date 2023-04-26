@@ -3,8 +3,7 @@
 namespace SmolCms\Bundle\ContentBlock\Twig;
 
 use SmolCms\Bundle\ContentBlock\Mapper\MapperInterface;
-use SmolCms\Bundle\ContentBlock\Metadata\ContentBlockRegistry;
-use SmolCms\Bundle\ContentBlock\Metadata\MetadataReader;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataRegistry;
 use SmolCms\Bundle\ContentBlock\Renderer\ContentBlockEngine;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -12,7 +11,7 @@ use Twig\TwigFunction;
 class SmolBlockExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly ContentBlockRegistry $registry,
+        private readonly MetadataRegistry $registry,
         private readonly ContentBlockEngine $engine,
         private readonly MapperInterface $mapper,
     ) {
@@ -26,12 +25,18 @@ class SmolBlockExtension extends AbstractExtension
 
     public function render(mixed $object, string $theme, ?string $mapTo = null): ?string
     {
+        if (!$object) {
+            return null;
+        }
+
         if ($mapTo) {
             $object = $this->map($object, $mapTo);
         }
 
-        $reader = new MetadataReader(get_class($object));
-        $blockMetadata = $reader->getMetadata();
+        $blockMetadata = $this->registry->metadataFor($object);
+        if ($blockMetadata->renderAs) {
+            $blockMetadata = $this->registry->metadataFor($blockMetadata->renderAs);
+        }
 
         return $this->engine->render($blockMetadata, $object, $theme);
     }

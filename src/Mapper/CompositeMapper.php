@@ -8,18 +8,19 @@
 
 namespace SmolCms\Bundle\ContentBlock\Mapper;
 
-use UnexpectedValueException;
-
-class CompositeMapper implements MapperInterface
+readonly class CompositeMapper implements MapperInterface
 {
     /**
      * @param MapperInterface[] $mappers
      */
     public function __construct(
-        private readonly iterable $mappers,
+        private iterable $mappers,
     ) {
     }
 
+    /**
+     * @throws MapperException
+     */
     public function map(mixed $from, string $to): mixed
     {
         foreach ($this->mappers as $mapper) {
@@ -30,7 +31,7 @@ class CompositeMapper implements MapperInterface
             return $mapper->map($from, $to);
         }
 
-        throw new UnexpectedValueException(
+        throw new MapperException(
             sprintf('Could not map block from "%s" to "%s".', get_debug_type($from), $to)
         );
     }

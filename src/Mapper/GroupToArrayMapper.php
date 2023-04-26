@@ -8,7 +8,7 @@
 
 namespace SmolCms\Bundle\ContentBlock\Mapper;
 
-use SmolCms\Bundle\ContentBlock\ContentBlock\Group;
+use SmolCms\Bundle\ContentBlock\Type\Group;
 
 class GroupToArrayMapper implements MapperInterface
 {
@@ -21,6 +21,6 @@ class GroupToArrayMapper implements MapperInterface
 
     public function supports(mixed $from, string $to): bool
     {
-        return is_a($from, Group::class, true) && $to === 'array';
+        return is_a($from, Group::class, true) && Group::supports($to);
     }
 }

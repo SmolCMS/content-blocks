@@ -14,7 +14,7 @@ class ContentBlock
 {
     public function __construct(
         private readonly BlockMetadata $metadata,
-        private mixed $properties = null,
+        private mixed $data = null,
     ) {
     }
 
@@ -23,13 +23,13 @@ class ContentBlock
         return $this->metadata;
     }
 
-    public function getProperties(): mixed
+    public function getData(): mixed
     {
-        return $this->properties;
+        return $this->data;
     }
 
-    public function setProperties(mixed $properties): void
+    public function setData(mixed $data): void
     {
-        $this->properties = $properties;
+        $this->data = $data;
     }
 }

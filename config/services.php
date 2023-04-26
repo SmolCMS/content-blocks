@@ -8,11 +8,13 @@
 
 namespace SmolCms\Bundle\ContentBlock;
 
+use SmolCms\Bundle\ContentBlock\Form\Type\ContentBlockWrapperType;
+use SmolCms\Bundle\ContentBlock\Form\Type\ContentBlockDataType;
 use SmolCms\Bundle\ContentBlock\Mapper\CompositeMapper;
 use SmolCms\Bundle\ContentBlock\Renderer\ContentBlockRenderer;
 use SmolCms\Bundle\ContentBlock\Serializer\ContentBlockDenormalizer;
 use SmolCms\Bundle\ContentBlock\Twig\SmolBlockExtension;
-use SmolCms\Bundle\ContentBlock\Type\GuessHandler;
+use SmolCms\Bundle\ContentBlock\Type\BuiltinTypeHandler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -25,18 +27,13 @@ return static function (ContainerConfigurator $containerConfigurator) {
             ->autoconfigure()
     ;
 
-
     $services->load('SmolCms\\Bundle\\ContentBlock\\', '../src')
         ->exclude([
             '../src/DependencyInjection/',
             '../src/SmolCmsContentBlockBundle.php',
-            '../demo',
         ]);
 
-    $services->load('SmolCms\\Bundle\\ContentBlock\\ContentBlock\\', '../src/ContentBlock/')
-        ->autowire(false);
-
-    $services->set(GuessHandler::class)
+    $services->set(BuiltinTypeHandler::class)
         ->arg('$formTypeGuesser', service('form.type_guesser.validator'));
 
     $services->set(CompositeMapper::class)
@@ -59,6 +56,14 @@ return static function (ContainerConfigurator $containerConfigurator) {
     ;
 
     $services->set(SmolBlockExtension::class)
+        ->arg('$mapper', service('smol_content_blocks.mappers'))
+    ;
+
+    $services->set(ContentBlockWrapperType::class)
+        ->arg('$mapper', service('smol_content_blocks.mappers'))
+    ;
+
+    $services->set(ContentBlockDataType::class)
         ->arg('$mapper', service('smol_content_blocks.mappers'))
     ;
 };

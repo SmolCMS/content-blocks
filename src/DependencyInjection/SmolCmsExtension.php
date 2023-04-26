@@ -10,9 +10,10 @@ namespace SmolCms\Bundle\ContentBlock\DependencyInjection;
 
 use SmolCms\Bundle\ContentBlock\Attribute\AsContentBlock;
 use SmolCms\Bundle\ContentBlock\Mapper\MapperInterface;
-use SmolCms\Bundle\ContentBlock\Type\Factory\ContentBlockHandlerFactory;
-use SmolCms\Bundle\ContentBlock\Metadata\ContentBlockRegistry;
-use SmolCms\Bundle\ContentBlock\Type\HandlerInterface;
+use SmolCms\Bundle\ContentBlock\Type\BlockTypeHandlerInterface;
+use SmolCms\Bundle\ContentBlock\Type\Factory\TypeHandlerFactory;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataRegistry;
+use SmolCms\Bundle\ContentBlock\Type\PropertyTypeHandlerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
@@ -43,18 +44,22 @@ class SmolCmsExtension extends Extension implements PrependExtensionInterface
             }
         );
 
-        $container->register(ContentBlockRegistry::class)
+        $container->register(MetadataRegistry::class)
             ->setArguments([
                 new ServiceLocatorArgument(new TaggedIteratorArgument('smol_cms.content_blocks', 'key', null, true)),
             ])
         ;
 
-        $container->registerForAutoconfiguration(HandlerInterface::class)
-            ->addTag('smol_cms.content_block_handlers');
+        $container->registerForAutoconfiguration(BlockTypeHandlerInterface::class)
+            ->addTag('smol_content_block.block_type_handlers');
 
-        $container->register(ContentBlockHandlerFactory::class)
+        $container->registerForAutoconfiguration(PropertyTypeHandlerInterface::class)
+            ->addTag('smol_content_block.property_type_handlers');
+
+        $container->register(TypeHandlerFactory::class)
             ->setArguments([
-                new ServiceLocatorArgument(new TaggedIteratorArgument('smol_cms.content_block_handlers', null, null, true)),
+                new ServiceLocatorArgument(new TaggedIteratorArgument('smol_content_block.block_type_handlers', null, null, true)),
+                new ServiceLocatorArgument(new TaggedIteratorArgument('smol_content_block.property_type_handlers', null, null, true)),
             ])
         ;
 

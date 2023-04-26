@@ -7,20 +7,43 @@
 
 namespace SmolCms\Bundle\ContentBlock;
 
-use SmolCms\Bundle\ContentBlock\Metadata\ContentBlockRegistry;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataReaderException;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataRegistry;
 
-class ContentBlockFactory
+readonly class ContentBlockFactory
 {
     public function __construct(
-        private readonly ContentBlockRegistry $registry,
+        private MetadataRegistry $registry,
     ) {
     }
 
-    public function create(array $block, ?string $blockName = null): ContentBlock
+    /**
+     * @throws ContentBlockFactoryException
+     * @throws MetadataReaderException
+     */
+    public function create(mixed $block, ?string $blockName = null, ?array $allowedBlocks = null): ContentBlock
     {
-        $blockName ??= $block['name'];
-        $metadata = $this->registry->metadataFor($blockName);
+        if (!isset($block['name'], $block['data'])) {
+            throw new ContentBlockFactoryException('Invalid content block.');
+        }
 
-        return new ContentBlock($metadata, $block['properties']);
+        $blockName ??= $block['name'];
+
+        if ($allowedBlocks === null) {
+            $metadata = $this->registry->metadataFor($blockName);
+        } else {
+            $metadataAllowed = $this->registry->normalizeMetadata($allowedBlocks);
+            if (!isset($metadataAllowed[$blockName])) {
+                throw new \UnexpectedValueException(sprintf(
+                    'Not allowed content block "%s". Allowed are: %s.',
+                    $blockName,
+                    implode(', ', array_keys($metadataAllowed))
+                ));
+            }
+
+            $metadata = $metadataAllowed[$blockName];
+        }
+
+        return new ContentBlock($metadata, $block['data']);
     }
 }

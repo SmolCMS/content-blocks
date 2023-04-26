@@ -10,13 +10,15 @@ namespace SmolCms\Bundle\ContentBlock\Metadata;
 
 use SmolCms\Bundle\ContentBlock\Type\TypeInterface;
 
-class BlockMetadata
+readonly class BlockMetadata
 {
     public function __construct(
-        public readonly string $name,
-        public readonly string $label,
-        public readonly string $class,
-        public readonly TypeInterface $type,
+        public string $name,
+        public string $label,
+        public string $class,
+        public TypeInterface $type,
+        public array $provides = [],
+        public ?string $renderAs = null,
     ) {
     }
 }

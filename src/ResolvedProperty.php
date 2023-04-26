@@ -12,6 +12,7 @@ use SmolCms\Bundle\ContentBlock\Metadata\BlockMetadata;
 use SmolCms\Bundle\ContentBlock\Metadata\PropertyMetadata;
 use SmolCms\Bundle\ContentBlock\Type\GenericType;
 use SmolCms\Bundle\ContentBlock\Type\TypeInterface;
+use Symfony\Component\Validator\Constraint;
 
 readonly class ResolvedProperty
 {
@@ -53,14 +54,21 @@ readonly class ResolvedProperty
         return $this->metadata->getProperty()->type ?? $this->innerBlockMetadata?->type ?? new GenericType();
     }
 
-    public function getFormOptions(): array
+    public function getLabel(): string|bool
     {
-        $type = $this->getType();
+        return $this->getType()->label ?? $this->getPropertyName();
+    }
 
-        return $type->formOptions + [
-            'label' => $type->label ?? $this->getPropertyName(),
-            'required' => $type->required ?? !$this->metadata->isNullable(),
-            'constraints' => $this->constraints,
-        ];
+    public function isRequired(): bool
+    {
+        return $this->getType()->required ?? !$this->metadata->isNullable();
+    }
+
+    /**
+     * @return Constraint[]
+     */
+    public function getConstraints(): array
+    {
+        return $this->constraints;
     }
 }

@@ -10,15 +10,15 @@ namespace SmolCms\Bundle\ContentBlock\Metadata;
 
 use SmolCms\Bundle\ContentBlock\Attribute\Property;
 
-class PropertyMetadata
+readonly class PropertyMetadata
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $propertyName,
-        private readonly Property $property,
-        private readonly string $propertyType,
-        private readonly bool $nullable,
-        private readonly bool $isBuiltin,
+        private string $class,
+        private string $propertyName,
+        private Property $property,
+        private string $propertyType,
+        private bool $nullable,
+        private bool $isBuiltin,
     ) {
     }
 
@@ -28,11 +28,6 @@ class PropertyMetadata
     }
 
     public function getPropertyName(): string
-    {
-        return $this->propertyName;
-    }
-
-    public function getLabel(): string
     {
         return $this->propertyName;
     }

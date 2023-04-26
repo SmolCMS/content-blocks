@@ -10,6 +10,9 @@ namespace SmolCms\Bundle\ContentBlock\Mapper;
 
 interface MapperInterface
 {
+    /**
+     * @throws MapperException
+     */
     public function map(mixed $from, string $to): mixed;
     public function supports(mixed $from, string $to): bool;
 }

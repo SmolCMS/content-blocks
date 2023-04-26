@@ -8,26 +8,36 @@
 
 namespace SmolCms\Bundle\ContentBlock;
 
-use SmolCms\Bundle\ContentBlock\ContentBlock\Builtin;
-use SmolCms\Bundle\ContentBlock\ContentBlock\Group;
 use SmolCms\Bundle\ContentBlock\Metadata\BlockMetadata;
-use SmolCms\Bundle\ContentBlock\Metadata\ContentBlockRegistry;
+use SmolCms\Bundle\ContentBlock\Metadata\MetadataRegistry;
 use SmolCms\Bundle\ContentBlock\Metadata\PropertyMetadata;
+use SmolCms\Bundle\ContentBlock\Type\Builtin;
+use SmolCms\Bundle\ContentBlock\Type\Group;
+use SmolCms\Bundle\ContentBlock\Type\GroupType;
 use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 use Symfony\Component\Validator\Mapping\MetadataInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ResolvedPropertyFactory
+readonly class ResolvedPropertyFactory
 {
     public function __construct(
-        private readonly ContentBlockRegistry $registry,
-        private readonly ValidatorInterface $validator,
+        private MetadataRegistry $registry,
+        private ValidatorInterface $validator,
     ) {
     }
 
     public function create(BlockMetadata $parentBlock, PropertyMetadata $property): ResolvedProperty
     {
         $innerBlockMetadata = $this->resolveInnerBlockMetadata($property);
+
+        //todo: nie wiem czy potrzebne? To tylko po to żeby runtime sprawdzić czy to pole jest do obsłużenia
+        if ($property->getPropertyType() === 'mixed' && $property->getProperty()->type === null) {
+            throw new \LogicException(sprintf(
+                'Cannot guess type for mixed property "%s::$%s". You should configure type explicit via `#[Property(type: ...)]` attribute.',
+                $property->getClass(), $property->getPropertyName()
+            ));
+        }
+
         $validatorClassMetadata = $this->validator->getMetadataFor($parentBlock->class);
         $constraints = $this->getConstraints($validatorClassMetadata, $property);
 
@@ -61,7 +71,7 @@ class ResolvedPropertyFactory
         $propertyType = $property->getPropertyType();
 
         if ($property->isBuiltin()) {
-            if ($propertyType === 'array') {
+            if (Group::supports($propertyType) && is_a($property->getProperty()->type, GroupType::class, true)) {
                 return $this->registry->metadataFor(Group::class);
             }
 
@@ -71,13 +81,11 @@ class ResolvedPropertyFactory
         }
 
         if (!$propertyType) {
-            throw new \LogicException(
-                sprintf(
-                    'Could not guess block type for property "%s" in class "%s".',
-                    $property->getPropertyName(),
-                    $property->getClass()
-                )
-            );
+            throw new \LogicException(sprintf(
+                'Could not guess block type for property "%s" in class "%s".',
+                $property->getPropertyName(),
+                $property->getClass()
+            ));
         }
 
         if ($this->registry->has($propertyType)) {

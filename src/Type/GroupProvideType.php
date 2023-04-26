@@ -2,20 +2,18 @@
 
 namespace SmolCms\Bundle\ContentBlock\Type;
 
-readonly class GroupProvideType extends GenericType
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
+readonly class GroupProvideType extends GroupType
 {
     public function __construct(
-        public array $allowed = [],
-        public bool $allowChange = false,
+        array $allowed = [],
+        bool $allowChange = false,
+        string $formType = CollectionType::class,
         array $formOptions = [],
         ?string $label = null,
-        ?bool $required = null,
+        ?bool $required = null
     ) {
-        parent::__construct(
-            formOptions: $formOptions,
-            label: $label,
-            required: $required,
-            handler: GroupProvideHandler::class,
-        );
+        parent::__construct($allowed, $allowChange, true, $formType, $formOptions, $label, $required);
     }
 }

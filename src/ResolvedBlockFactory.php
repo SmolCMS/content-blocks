@@ -8,15 +8,13 @@
 
 namespace SmolCms\Bundle\ContentBlock;
 
-use SmolCms\Bundle\ContentBlock\Metadata\MetadataReader;
+use SmolCms\Bundle\ContentBlock\Metadata\BlockMetadataReader;
 use SmolCms\Bundle\ContentBlock\Metadata\BlockMetadata;
-use SmolCms\Bundle\ContentBlock\Type\Factory\ContentBlockHandlerFactory;
-use SmolCms\Bundle\ContentBlock\Type\GenericHandler;
 
-class ResolvedBlockFactory
+readonly class ResolvedBlockFactory
 {
     public function __construct(
-        private readonly ResolvedPropertyFactory $propertyFactory,
+        private ResolvedPropertyFactory $propertyFactory,
     ) {
     }
 
@@ -32,7 +30,7 @@ class ResolvedBlockFactory
     private function resolveProperties(BlockMetadata $metadata): array
     {
         $properties = [];
-        $reader = new MetadataReader($metadata->class);
+        $reader = new BlockMetadataReader($metadata->class);
 
         foreach ($reader->getProperties() as $propertyMetadata) {
             $properties[] = $this->propertyFactory->create($metadata, $propertyMetadata);
