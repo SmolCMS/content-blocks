@@ -11,9 +11,19 @@ readonly class GroupProvideType extends GroupType
         bool $allowChange = false,
         string $formType = CollectionType::class,
         array $formOptions = [],
+        array $blockSelectorOptions = [],
         ?string $label = null,
         ?bool $required = null
     ) {
-        parent::__construct($allowed, $allowChange, true, $formType, $formOptions, $label, $required);
+        parent::__construct(
+            allowed: $allowed,
+            allowChange: $allowChange,
+            provide: true,
+            formType: $formType,
+            formOptions: $formOptions,
+            blockSelectorOptions: $blockSelectorOptions,
+            label: $label,
+            required: $required,
+        );
     }
 }
