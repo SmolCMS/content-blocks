@@ -44,12 +44,14 @@ readonly class ProvideTypeHandler implements PropertyTypeHandlerInterface
         }
 
         $builder->add($property->getPropertyName(), ContentBlockWrapperType::class, [
-            'label' => $type->label ?? null,
+            'label' => false,
             'property' => $property,
             'allowed' => $allowed,
             'allow_change' => $type->allowChange,
             'invalid_mapping_strategy' => $property->getMetadata()->getProperty()->invalidMappingStrategy,
-            'block_selector_options' => $type->blockSelectorOptions,
+            'block_selector_options' => $type->blockSelectorOptions + [
+                'label' => $type->label ?? null,
+            ],
         ]);
     }
 
