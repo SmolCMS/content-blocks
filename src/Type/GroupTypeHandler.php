@@ -9,6 +9,7 @@
 namespace SmolCms\Bundle\ContentBlock\Type;
 
 use SmolCms\Bundle\ContentBlock\Form\Transformer\GroupBlockTransformer;
+use SmolCms\Bundle\ContentBlock\Form\Transformer\SkipEmptyBlocksTransformer;
 use SmolCms\Bundle\ContentBlock\Form\Type\ContentBlockWrapperType;
 use SmolCms\Bundle\ContentBlock\Mapper\InvalidMappingStrategy;
 use SmolCms\Bundle\ContentBlock\Metadata\BlockMetadata;
@@ -110,6 +111,9 @@ readonly class GroupTypeHandler implements BlockTypeHandlerInterface, PropertyTy
                 $form->remove($item->getName());
             }
         }, 100);
+
+        $builder->get($propertyName)
+            ->addModelTransformer(new SkipEmptyBlocksTransformer());
 
         if ($propertyType === Group::class) {
             $builder->get($propertyName)

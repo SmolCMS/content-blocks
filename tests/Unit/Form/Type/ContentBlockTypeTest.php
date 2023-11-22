@@ -440,6 +440,62 @@ class ContentBlockTypeTest extends TypeTestCase
             })(),
         ];
 
+        yield 'test_group_skip_empty' => [
+            [
+                'array' => [
+                    0 => [
+                        'name' => 'test_simple2',
+                        'data' => [
+                            'string' => 'foo1',
+                            'stringNullable' => null,
+                        ],
+                    ],
+                    1 => [
+                        'name' => null,
+                    ],
+                ],
+                'iterable' => [
+                    0 => [
+                        'name' => 'test_simple2',
+                        'data' => [
+                            'string' => 'foo1',
+                            'stringNullable' => null,
+                        ],
+                    ],
+                    1 => [
+                        'name' => null,
+                    ],
+                ],
+                'group' => [
+                    0 => [
+                        'name' => 'test_simple2',
+                        'data' => [
+                            'string' => 'foo1',
+                            'stringNullable' => null,
+                        ],
+                    ],
+                    1 => [
+                        'name' => null,
+                    ],
+                ],
+            ],
+            (function () {
+                $item = new TestGroup();
+                $item->array = [
+                    $this->createSimple2('foo1'),
+                ];
+                $item->iterable = [
+                    $this->createSimple2('foo1'),
+                ];
+                $item->group = new Group();
+                $item->group->items = [
+                    $this->createSimple2('foo1'),
+                ];
+
+                return $item;
+            })(),
+        ];
+
         yield 'test_group_allowed' => [
             [
                 'items' => [
