@@ -1,13 +1,11 @@
 {
-  "name": "smolcms/blocks",
-  "version": "1.0.0",
+  "name": "smolcms/content-blocks",
   "description": "",
   "authors": [
     {
       "name": "Kamil Smolak",
       "email": "kamil@smol.pl",
-      "homepage": "https://smol.pl",
-      "role": "developer"
+      "homepage": "https://smol.pl"
     }
   ],
   "license": "proprietary",
