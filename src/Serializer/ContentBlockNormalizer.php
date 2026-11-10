@@ -33,7 +33,7 @@ class ContentBlockNormalizer implements NormalizerInterface, ServiceSubscriberIn
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
 
-    public function normalize(mixed $object, string $format = null, array $context = []): mixed
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $outerProperty = $context[ContentBlockContextBuilder::OUTER_PROPERTY] ?? null;
         $blockMetadata = $this->resolveBlockMetadata($outerProperty, $object);
@@ -96,6 +96,13 @@ class ContentBlockNormalizer implements NormalizerInterface, ServiceSubscriberIn
         }
 
         return null;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
     }
 
     private function getNormalizer(): NormalizerInterface

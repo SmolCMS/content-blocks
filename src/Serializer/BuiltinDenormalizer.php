@@ -27,4 +27,11 @@ readonly class BuiltinDenormalizer implements DenormalizerInterface
 
         return $innerType && is_a($innerType, Builtin::class, true) && Builtin::supports($type);
     }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
+    }
 }

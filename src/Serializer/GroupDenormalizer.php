@@ -52,6 +52,13 @@ readonly class GroupDenormalizer implements DenormalizerInterface, ServiceSubscr
         return is_a($innerType, Group::class, true) && Group::supports($type);
     }
 
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
+    }
+
     public static function getSubscribedServices(): array
     {
         return [

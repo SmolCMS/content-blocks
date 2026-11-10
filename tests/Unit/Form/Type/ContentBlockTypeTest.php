@@ -154,7 +154,7 @@ class ContentBlockTypeTest extends TypeTestCase
         ]);
         $this->handlerFactory = new TypeHandlerFactory($typeHandlerLocator, $typeHandlerLocator);
         $this->validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
+            ->enableAttributeMapping()
             ->getValidator();
         $this->propertyFactory = new ResolvedPropertyFactory($this->registry, $this->validator);
         $this->blockFactory = new ResolvedBlockFactory($this->propertyFactory);

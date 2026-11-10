@@ -51,6 +51,13 @@ readonly class ContentBlockDenormalizer implements DenormalizerInterface, Servic
         return $data instanceof ContentBlock || ($context[ContentBlockContextBuilder::DESERIALIZE] ?? false);
     }
 
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
+    }
+
     private function resolveValues(ContentBlock $block): array
     {
         $blockMetadata = $block->getMetadata();
